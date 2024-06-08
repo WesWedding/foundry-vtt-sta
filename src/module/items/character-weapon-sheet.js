@@ -1,7 +1,7 @@
 export class STACharacterWeaponSheet extends ItemSheet {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['sta', 'sheet', 'item', 'characterweapon'],
       width: 565,
       height: 400,
@@ -28,6 +28,8 @@ export class STACharacterWeaponSheet extends ItemSheet {
     const data = this.object;
     data.dtypes = ['String', 'Number', 'Boolean'];
 
+    data.ranges = this._createRangeOptions();
+
     return data;
   }
 
@@ -50,5 +52,18 @@ export class STACharacterWeaponSheet extends ItemSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
+  }
+
+  /**
+   * Get the character weapon ranges.
+   *
+   * @returns {object}  Object with weapon ranges formatted for selectOptions.
+   * @protected
+   */
+  _createRangeOptions() {
+    return {
+      [game.i18n.localize("sta.actor.belonging.weapon.melee")]: game.i18n.localize("sta.actor.belonging.weapon.melee"),
+      [game.i18n.localize("sta.actor.belonging.weapon.ranged")]: game.i18n.localize("sta.actor.belonging.weapon.ranged"),
+    };
   }
 }

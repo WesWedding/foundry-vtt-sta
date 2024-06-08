@@ -1,7 +1,7 @@
 export class STASmallCraftContainerSheet extends ItemSheet {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['sta', 'sheet', 'item'],
       width: 680,
       height: 320,
@@ -21,7 +21,7 @@ export class STASmallCraftContainerSheet extends ItemSheet {
       ui.notifications.warn('You do not have permission to view this item!');
       return;
     }
-    if (!isNewerVersion(versionInfo,"0.8.-1")) return "systems/sta/templates/items/smallcraftcontainer-sheet-legacy.html";
+    if (!foundry.utils.isNewerVersion(versionInfo,"0.8.-1")) return "systems/sta/templates/items/smallcraftcontainer-sheet-legacy.html";
     return `systems/sta/templates/items/smallcraftcontainer-sheet.html`;
   }
 
@@ -36,7 +36,7 @@ export class STASmallCraftContainerSheet extends ItemSheet {
     data.dtypes = ['String', 'Number', 'Boolean'];
     let smallcrafts;
 
-    if (!isNewerVersion(versionInfo,"0.8.-1"))
+    if (!foundry.utils.isNewerVersion(versionInfo,"0.8.-1"))
     {
       smallcrafts = game.actors.filter((target) => 
         target.type === 'smallcraft' && target.owner);
@@ -44,7 +44,7 @@ export class STASmallCraftContainerSheet extends ItemSheet {
       smallcrafts = game.actors.filter((target) => 
         target.type === 'smallcraft' && target.isOwner);
     }
-    data.availableSmallcrafts = smallcrafts;
+    data.availableSmallCraftOptions = this._createCraftOptions(smallcrafts);
 
     return data;
   }
@@ -68,5 +68,23 @@ export class STASmallCraftContainerSheet extends ItemSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
+  }
+
+  /**
+   * Get the character weapon ranges.
+  *
+  * @param {Actor[]} smallCrafts
+  *
+  * @returns {object}  Object with weapon ranges formatted for selectOptions.
+  * @protected
+  */
+  _createCraftOptions(smallCrafts) {
+
+    const crafts = {}
+    smallCrafts.forEach((smallCraft) => {
+      crafts[smallCraft.id] = smallCraft.name;
+    });
+
+    return crafts;
   }
 }
