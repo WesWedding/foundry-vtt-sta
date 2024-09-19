@@ -193,14 +193,6 @@ export class STATracker extends Application {
     return game.permissions.SETTINGS_MODIFY.includes(game.user.role);
   }
 
-  /**
-   * Update the given resource to the given value.
-   * 
-   * @private
-   * @param {STATracker.Resource} resource The resource to modify.
-   * @param {number} value The value to set for the given resource.
-   */
-
 // Store the accumulated changes and a timer
   static accumulatedChanges = {
     momentum: 0,
@@ -209,6 +201,13 @@ export class STATracker extends Application {
 
   static chatMessageTimeout = null; // Holds the timeout for debouncing
 
+  /**
+   * Update the given resource to the given value.
+   *
+   * @private
+   * @param {STATracker.Resource} resource The resource to modify.
+   * @param {number} newValue The value to set for the given resource.
+   */
   static async DoUpdateResource(resource, newValue) {
     if (!STATracker.UserHasPermissionFor(resource)) {
         ui.notifications.error(game.i18n.localize(`sta.notifications.${resource}invalidpermissions`));
