@@ -1,3 +1,5 @@
+// NOTE: This file is ignored by ESLint because it relies on JS features more
+// advanced than the rest of the project's EcmaVersion, as well as whitespace rules.
 export class STATracker extends Application {
   /**
    * The name of the communication socket used to update the tracker information.
@@ -244,39 +246,51 @@ export class STATracker extends Application {
         }
 
         // Set a new timeout to send the chat message after 1 second of inactivity
-        STATracker.chatMessageTimeout = setTimeout(() => {
-            let momentumDiff = STATracker.accumulatedChanges.momentum;
-            let threatDiff = STATracker.accumulatedChanges.threat;
-            let chatMessage = '';
-
-            // Construct the chat message based on the accumulated changes
-        if (momentumDiff !== 0) {
-            let momentumAction = momentumDiff > 0 ? 
-                game.i18n.format("sta.apps.addmomentum", {0: momentumDiff}) : 
-                game.i18n.format("sta.apps.removemomentum", {0: Math.abs(momentumDiff)});
-            chatMessage += `${game.user.name} ${momentumAction}. `;
-        }
-        if (threatDiff !== 0) {
-            let threatAction = threatDiff > 0 ? 
-                game.i18n.format("sta.apps.addthreat", {0: threatDiff}) : 
-                game.i18n.format("sta.apps.removethreat", {0: Math.abs(threatDiff)});
-            chatMessage += `${game.user.name} ${threatAction}.`;
-        }
-
-            // Send the chat message
-            if (chatMessage) {
-                ChatMessage.create({
-                    speaker: { alias: "STA" },
-                    content: chatMessage
-                });
-            }
-
-            // Reset the accumulated changes
-            STATracker.accumulatedChanges.momentum = 0;
-            STATracker.accumulatedChanges.threat = 0;
-
-        }, 1000);  // 1-second delay
+        STATracker.chatMessageTimeout = setTimeout(STATracker._notifyTrackerChanges, 1000);  // 1-second delay
     }
+  }
+
+  /**
+   * Timeout that will emit the accumulated changes in the pools to chat.
+   * @private
+   */
+  static _notifyTrackerChanges() {
+      const shouldNotify = game.settings.get('sta', 'trackerChatMessages');
+      if (!shouldNotify) {
+        // Reset the accumulated changes
+        STATracker.accumulatedChanges.momentum = 0;
+        STATracker.accumulatedChanges.threat = 0;
+        return;
+      }
+
+      let momentumDiff = STATracker.accumulatedChanges.momentum;
+      let threatDiff = STATracker.accumulatedChanges.threat;
+      let chatMessage = '';
+
+      // Construct the chat message based on the accumulated changes
+      if (momentumDiff !== 0) {
+        let momentumAction = momentumDiff > 0 ?
+          game.i18n.format("sta.apps.addmomentum", {0: momentumDiff}) :
+          game.i18n.format("sta.apps.removemomentum", {0: Math.abs(momentumDiff)});
+        chatMessage += `${game.user.name} ${momentumAction}. `;
+      }
+      if (threatDiff !== 0) {
+        let threatAction = threatDiff > 0 ?
+          game.i18n.format("sta.apps.addthreat", {0: threatDiff}) :
+          game.i18n.format("sta.apps.removethreat", {0: Math.abs(threatDiff)});
+        chatMessage += `${game.user.name} ${threatAction}.`;
+      }
+
+      // Send the chat message
+      if (chatMessage) {
+        ChatMessage.create({
+          speaker: { alias: "STA" },
+          content: chatMessage
+        });
+      }
+      // Reset the accumulated changes
+      STATracker.accumulatedChanges.momentum = 0;
+      STATracker.accumulatedChanges.threat = 0;
   }
 
   /**

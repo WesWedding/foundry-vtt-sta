@@ -239,6 +239,15 @@ Hooks.once('init', function() {
     }
   });
 
+  game.settings.register('sta', 'trackerChatMessages', {
+    name: 'Momentum Tracker Chat Updates',
+    hint: 'Should the tracker send chat messages when users change the threat/momentum?',
+    scope: 'world',
+    type: Boolean,
+    default: true,
+    config: true,
+  });
+
   game.settings.register('sta', 'maxNumberOfReputation', {
     name: 'Maximum Reputation (1st ed):',
     hint: 'Max number of reputation that can be given to a character. 10 is default.',

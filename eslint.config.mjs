@@ -95,6 +95,13 @@ export default [
       'no-trailing-spaces': 'off',
       'no-unused-vars': 'off',
       'no-useless-constructor': 'off',
-    }
+    },
   },
+  {
+    ignores: [
+      // Momentum tracker was written using more recent Ecma features (heavy static member usage)
+      // and whitespace formatting that doesn't fit the rest of the project.
+      '**/tracker.js',
+    ],
+  }
 ];
