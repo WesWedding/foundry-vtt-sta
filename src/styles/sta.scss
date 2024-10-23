@@ -424,15 +424,23 @@ $trackColors: (
 
   .sheet-tabs {
     margin: 0;
-    padding: 0;
+    padding: 0 10px;
+    background-color: #444A77;
     border: none;
-    gap: 10px;
+    border-radius: 0 0 10px 10px;
+    color: $inlaidText;
   }
 
   .sheet-tabs .item {
     margin: 0;
-    padding: 0;
-	color: $labelColor;
+    padding: 0 10px;
+    font-weight: bold;
+
+    &.active {
+      text-shadow: none;
+      background-color: #FF7700;
+      border-radius: 10px;
+    }
   }
     .row .column {
       display: flex;
